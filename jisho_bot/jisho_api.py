@@ -11,8 +11,17 @@ def get_definition(word, limit=1):
         if ind < len(res_dict):
             definition = res_dict[ind]
 
-            japanese = definition["japanese"][0]
-            kanji, reading = japanese['word'], japanese['reading']
+            ind = 0 
+            japanese = definition["japanese"][ind]
+            kanji, reading = japanese.get('word'), japanese.get('reading')
+            orig_kanji, orig_reading = kanji, reading
+            while kanji is None or reading is None:
+                japanese = definition["japanese"][ind]
+                kanji, reading = japanese.get('word'), japanese.get('reading')
+                ind += 1
+                if ind == len(definition["japanese"]):
+                    kanji, reading = orig_kanji, orig_reading
+                    break
 
             senses = definition["senses"][0]
             english = ",".join([str(x) for x in senses['english_definitions']])
