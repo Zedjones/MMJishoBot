@@ -4,14 +4,15 @@ from .jisho_api import get_definition
 from mmpy_bot.bot import listen_to
 from mmpy_bot.bot import respond_to
 
-DEF_RESP_STR = "Word: {}\nEnglish: {}\nKanji: {}\nHiragana/Katakana: {}"
+DEF_RESP_STR = "Word: {}\nEnglish: {}\nKanji: {}\nHiragana: {}\nRomaji: {}"
 
 def form_definition_string(word, limit):
     definition_list = get_definition(word, limit)
     resp_str = ""
     for ind, item in enumerate(definition_list):
         resp_str += DEF_RESP_STR.format(item["orig_word"], item["english"],
-                                        item["kanji"], item["reading"])
+                                        item["kanji"], item["reading"],
+                                        item["romaji"])
         if ind != len(definition_list) - 1:
             resp_str += '\n\n'
     return resp_str
