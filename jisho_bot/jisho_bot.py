@@ -4,7 +4,7 @@ from .jisho_api import get_definition
 from mmpy_bot.bot import listen_to
 from mmpy_bot.bot import respond_to
 
-DEF_RESP_STR = "Word: {}\nEnglish: {}\nKanji: {}\nHiragana: {}\nRomaji: {}"
+DEF_RESP_STR = "Word: {}\nEnglish: {}\nKanji: {}\nHiragana/Katakana: {}\nRomaji: {}"
 
 def form_definition_string(word, limit):
     definition_list = get_definition(word, limit)
