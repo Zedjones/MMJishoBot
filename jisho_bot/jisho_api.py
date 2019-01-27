@@ -57,11 +57,23 @@ KATAKANA_DICT = {
     'ラ': 'ra', 'リ': 'ri', 'ル': 'ru', 'レ': 're', 'ロ': 'ro',
     'ワ': 'wa', 'ヰ': 'wi', 'ヱ': 'we', 'ヲ': 'wo',
     'ッ': 'sokuon', 'ー': 'ー',
-    'ャ': 'ya', 'ュ': 'yu', 'ョ': 'yo'
+    'ャ': 'ya', 'ュ': 'yu', 'ョ': 'yo',
+    'キャ': 'kya', 'キュ': 'kyu', 'キョ': 'kyo',
+    'シャ': 'sha', 'シュ': 'shu', 'ショ': 'sho',
+    'チャ': 'cha', 'チュ': 'chu', 'チョ': 'cho',
+    'ニャ': 'nya', 'ニュ': 'nyu', 'ニョ': 'nyo',
+    'ヒャ': 'hya', 'ヒュ': 'hyu', 'ヒョ': 'hyo',
+    'ミャ': 'mya', 'ミュ': 'myu', 'ミョ': 'myo',
+    'リャ': 'rya', 'リュ': 'ryu', 'リョ': 'ryo',
+    'ギャ': 'gya', 'ギュ': 'gyu', 'ギョ': 'gyo',
+    'ジャ': 'ja', 'ジュ': 'ju', 'ジョ': 'jo',
+    'ヂャ': 'ja', 'ヂュ': 'ju', 'ヂョ': 'jo',
+    'ビャ': 'bya', 'ビュ': 'byu', 'ビョ': 'byo',
+    'ピャ': 'pya', 'ピュ': 'pyu', 'ピョ': 'pyo'
 }
 
-SMALL_KATAKANA_DICT = {
-    'ャ': 'ya', 'ュ': 'yu', 'ョ': 'yo'
+SMALL_KATAKANA_LIST = {
+    'ャ', 'ュ', 'ョ'
 }
 
 def hiragana_to_romaji(hiragana):
@@ -79,16 +91,9 @@ def hiragana_to_romaji(hiragana):
 def katakana_to_romaji(katakana):
     romaji = []
     for ind, char in enumerate(katakana):
-        if ind+1 != len(katakana):
-            if katakana[ind+1] in SMALL_KATAKANA_DICT.keys():
-                continue
-        if char in SMALL_KATAKANA_DICT.keys():
-            prev_char = KATAKANA_DICT[katakana[ind-1]]
-            prev_cons = [c for c in prev_char if c in CONSONANTS]
-            if len(prev_cons) == 1:
-                romaji.append("".join(prev_cons) + SMALL_KATAKANA_DICT[char])
-            else:
-                romaji.append("".join(prev_cons) + SMALL_KATAKANA_DICT[char][1])
+        if char in SMALL_KATAKANA_LIST:
+            del(romaji[-1])
+            romaji.append(KATAKANA_DICT[katakana[ind-1] + char])
         elif KATAKANA_DICT[char] == "sokuon":
             romaji.append("".join([c for c in KATAKANA_DICT[katakana[ind+1]] if c in CONSONANTS]))
         else:
@@ -119,7 +124,7 @@ def get_definition(word, limit=1):
             senses = definition["senses"][0]
             english = ",".join([str(x) for x in senses['english_definitions']])
 
-            if all([char in KATAKANA_DICT or char in SMALL_KATAKANA_DICT for char in reading]):
+            if all([char in KATAKANA_DICT or char in SMALL_KATAKANA_LIST for char in reading]):
                 romaji = katakana_to_romaji(reading)
             else:
                 romaji = hiragana_to_romaji(reading)
@@ -136,4 +141,4 @@ def get_definition(word, limit=1):
 
 
 if __name__ == '__main__':
-    print(get_definition("ミュ", 3))
+    print(get_definition("ショ", 3))
