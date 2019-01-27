@@ -33,6 +33,12 @@ HIRAGANA_DICT = {
     'ぴゃ': 'pya', 'ぴゅ': 'pyu', 'ぴょ': 'pyo'
 }
 
+SMALL_HIRAGANA_LIST = [
+    'ゅ', 'ゃ', 'ょ'
+]
+
+CONSONANTS = "bcdfghjklmnpqrstvwxyz"
+
 KATAKANA_DICT = {
     'ア': 'a', 'イ': 'i', 'ウ': 'u', 'エ': 'e', 'オ': 'o', 'ン': 'n',
     'カ': 'ka', 'キ': 'ki', 'ク': 'ku', 'ケ': 'ke', 'コ': 'ko',
@@ -55,11 +61,22 @@ KATAKANA_DICT = {
 def hiragana_to_romaji(hiragana):
     romaji = []
     for ind, char in enumerate(hiragana):
-        if char not in HIRAGANA_DICT:
+        if char in SMALL_HIRAGANA_LIST:
             del(romaji[-1])
             romaji.append(HIRAGANA_DICT[hiragana[ind-1] + char])
+        elif HIRAGANA_DICT[char] == 'sokuon':
+            romaji.append("".join([c for c in HIRAGANA_DICT[hiragana[ind+1]] if c in CONSONANTS]))
         else:
             romaji.append(HIRAGANA_DICT[char])
+    return "".join(romaji)
+
+def katakana_to_romaji(katakana):
+    romaji = []
+    for ind, char in enumerate(katakana):
+        if KATAKANA_DICT[char] == "sokuon":
+            romaji.append("".join([c for c in KATAKANA_DICT[katakana[ind+1]] if c in CONSONANTS]))
+        else:
+            romaji.append(KATAKANA_DICT[char])
     return "".join(romaji)
 
 def get_definition(word, limit=1):
@@ -86,7 +103,10 @@ def get_definition(word, limit=1):
             senses = definition["senses"][0]
             english = ",".join([str(x) for x in senses['english_definitions']])
 
-            romaji = hiragana_to_romaji(reading)
+            if all([char in KATAKANA_DICT for char in reading]):
+                romaji = katakana_to_romaji(reading)
+            else:
+                romaji = hiragana_to_romaji(reading)
 
             definition_dict = {
                 'kanji': kanji,
